@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>One Shot Auto Color</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/pico.slate.css') }}">
+</head>
+
+<body>
+    <header class="container">
+        {% if data %}
+        <h1 contenteditable="true" id="invoice-number" style="display: none;">INVOICE # {{ data.get('INVOICE #') }} </h1>
+        {% endif %}
+        <div class="theme-toggle-container">
+            <label>
+                <input name="terms" type="checkbox" role="switch" onchange="toggleTheme(this)"/>
+                Theme
+              </label>
+        </div>
+        <div class="grid">
+            <div>
+                <div> ONE SHOT AUTO COLOR</div>
+                <div>8556 N US HWY 75 BUFFALO TX</div>
+                <div>979-402-7554</div>
+            </div>
+            <div></div>
+            <div class="hgroup">
+                <fieldset role="group"><button class="contrast">NAME:</button><input type="text" id="name"
+                        aria-label="Name" value="{{ data.get('NAME') if data }}"></fieldset>
+                <fieldset role="group"><button class="contrast">DATE:</button><input type="date" id="date"
+                        aria-label="Date" value="{{ data.get('DATE') if data }}"></fieldset>
+            </div>
+        </div>
+    </header>
+    <main class="container">
+        <table>
+            <thead>
+                <tr>
+                    <th>APPROVED</th>
+                    <th>STOCK #</th>
+                    <th>DESCRIPTION</th>
+                    <th>HEAD LIGHTS</th>
+                    <th>DENTS</th>
+                    <th>CHIPS/SCRATCHES</th>
+                    <th>REMEDIATION</th>
+                    <th>PAINT & BODY</th>
+                    <th>PARTS</th>
+                    <th>LABOR</th>
+                    <th>TOTAL</th>
+                </tr>
+            </thead>
+            <tbody id="invoice-items">
+                {% if not data %}
+                {% for i in range(3) %}
+                <tr>
+                    <td><input type="checkbox" class="approved-toggle"></td>
+                    <td contenteditable="true"></td>
+                    <td contenteditable="true"></td>
+                    <td contenteditable="true"></td>
+                    <td contenteditable="true"></td>
+                    <td contenteditable="true"></td>
+                    <td contenteditable="true"></td>
+                    <td contenteditable="true"></td>
+                    <td contenteditable="true"></td>
+                    <td contenteditable="true"></td>
+                    <td contenteditable="true"></td>
+                </tr>
+                {% endfor %}
+                {% else %}
+                {% for item in data['invoiceItems'][:-1] %}
+                <tr>
+                    <td><input type="checkbox" class="approved-toggle" {% if item.approved %}checked{% endif %}></td>
+                    <td contenteditable="true">{{ item.stock_number }}</td>
+                    <td contenteditable="true">{{ item.description }}</td>
+                    <td contenteditable="true">{{ item.head_lights }}</td>
+                    <td contenteditable="true">{{ item.dents }}</td>
+                    <td contenteditable="true">{{ item.chips_scratches }}</td>
+                    <td contenteditable="true">{{ item.remediation }}</td>
+                    <td contenteditable="true">{{ item.paint_body }}</td>
+                    <td contenteditable="true">{{ item.parts }}</td>
+                    <td contenteditable="true">{{ item.labor }}</td>
+                    <td contenteditable="true">{{ item.total }}</td>
+                </tr>
+                {% endfor %}
+                {% endif %}
+            </tbody>
+        </table>
+        <div style="margin-top: 20px; text-align: right;">
+            <button type="button" class="submit" onclick="submitInvoice()">Save & Create Share Link</button>
+        </div>
+        <fieldset id="link-container" role="group" style="display: none;">
+            <input type="text" id="invoice-link" disabled>
+            <input type="button" id="invoice-copy" onclick="copyLink()" value="Copy">
+        </fieldset>
+    </main>
+    <script src="{{ url_for('static', filename='index.js') }}"></script>
+</body>
+
+</html>

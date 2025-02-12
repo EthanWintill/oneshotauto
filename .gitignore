@@ -1,0 +1,6 @@
+
+.DS_Store
+
+.venv
+
+.venv/lib/python3.11/site-packages/__pycache__/
