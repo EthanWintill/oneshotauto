@@ -4,3 +4,5 @@
 .venv
 
 .venv/lib/python3.11/site-packages/__pycache__/
+
+instance/site.db
