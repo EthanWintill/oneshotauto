@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>One Shot Auto Color</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/pico.slate.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
 </head>
 
 <body>
@@ -39,17 +39,19 @@
         <table>
             <thead>
                 <tr>
-                    <th>APPROVED</th>
-                    <th>STOCK #</th>
-                    <th>DESCRIPTION</th>
-                    <th>HEAD LIGHTS</th>
-                    <th>DENTS</th>
-                    <th>CHIPS/SCRATCHES</th>
-                    <th>REMEDIATION</th>
-                    <th>PAINT & BODY</th>
-                    <th>PARTS</th>
-                    <th>LABOR</th>
-                    <th>TOTAL</th>
+                    <th class="check-column"><div>APPROVED</div></th>
+                    <th class="text-column"><div>COMMENTS</div></th>
+                    <th class="text-column"><div>STOCK #</div></th>
+                    <th class="text-column"><div>DESCRIPTION</div></th>
+                    <th class="picture-column"><div>PICTURE</div></th>
+                    <th class="check-column"><div>HEAD LIGHTS</div></th>
+                    <th class="check-column"><div>DENTS</div></th>
+                    <th class="check-column"><div>CHIPS & SCRATCHES</div></th>
+                    <th class="check-column"><div>PAINT TOUCH UP</div></th>
+                    <th class="check-column"><div>PAINT & BODY</div></th>
+                    <th class="number-column"><div>PARTS</div></th>
+                    <th class="number-column"><div>LABOR</div></th>
+                    <th class="number-column"><div>TOTAL</div></th>
                 </tr>
             </thead>
             <tbody id="invoice-items">
@@ -57,32 +59,51 @@
                 {% for i in range(3) %}
                 <tr>
                     <td><input type="checkbox" class="approved-toggle"></td>
+                    <td contenteditable="true" class="comments-cell"></td>
                     <td contenteditable="true"></td>
                     <td contenteditable="true"></td>
-                    <td contenteditable="true"></td>
-                    <td contenteditable="true"></td>
-                    <td contenteditable="true"></td>
-                    <td contenteditable="true"></td>
-                    <td contenteditable="true"></td>
-                    <td contenteditable="true"></td>
-                    <td contenteditable="true"></td>
-                    <td contenteditable="true"></td>
+                    <td>
+                        <input type="file" accept="image/*,.heic" class="picture-input" style="display:none;">
+                        <button type="button" class="picture-upload-btn">Upload</button>
+                        <img class="picture-preview" style="display:none;max-width:60px;max-height:60px;" />
+                        <input type="hidden" class="picture-url">
+                    </td>
+                    <td><input type="checkbox" class="head-lights-toggle"></td>
+                    <td><input type="checkbox" class="dents-toggle"></td>
+                    <td><input type="checkbox" class="chips-scratches-toggle"></td>
+                    <td><input type="checkbox" class="remediation-toggle"></td>
+                    <td><input type="checkbox" class="paint-body-toggle"></td>
+                    <td contenteditable="true" class="parts-cell"></td>
+                    <td contenteditable="true" class="labor-cell"></td>
+                    <td class="total-cell"></td>
                 </tr>
                 {% endfor %}
                 {% else %}
-                {% for item in data['invoiceItems'][:-1] %}
+                {% for item in data['invoiceItems'] %}
                 <tr>
                     <td><input type="checkbox" class="approved-toggle" {% if item.approved %}checked{% endif %}></td>
+                    <td contenteditable="true" class="comments-cell">{{ item.comments }}</td>
                     <td contenteditable="true">{{ item.stock_number }}</td>
                     <td contenteditable="true">{{ item.description }}</td>
-                    <td contenteditable="true">{{ item.head_lights }}</td>
-                    <td contenteditable="true">{{ item.dents }}</td>
-                    <td contenteditable="true">{{ item.chips_scratches }}</td>
-                    <td contenteditable="true">{{ item.remediation }}</td>
-                    <td contenteditable="true">{{ item.paint_body }}</td>
-                    <td contenteditable="true">{{ item.parts }}</td>
-                    <td contenteditable="true">{{ item.labor }}</td>
-                    <td contenteditable="true">{{ item.total }}</td>
+                    <td>
+                        {% if item.picture_url %}
+                            <img class="picture-preview" src="{{ item.picture_url }}" style="display:inline-block;max-width:60px;max-height:60px;" />
+                            <input type="hidden" class="picture-url" value="{{ item.picture_url }}">
+                        {% else %}
+                            <input type="file" accept="image/*,.heic" class="picture-input" style="display:none;">
+                            <button type="button" class="picture-upload-btn">Upload</button>
+                            <img class="picture-preview" style="display:none;max-width:60px;max-height:60px;" />
+                            <input type="hidden" class="picture-url">
+                        {% endif %}
+                    </td>
+                    <td><input type="checkbox" class="head-lights-toggle" {% if item.head_lights %}checked{% endif %}></td>
+                    <td><input type="checkbox" class="dents-toggle" {% if item.dents %}checked{% endif %}></td>
+                    <td><input type="checkbox" class="chips-scratches-toggle" {% if item.chips_scratches %}checked{% endif %}></td>
+                    <td><input type="checkbox" class="remediation-toggle" {% if item.remediation %}checked{% endif %}></td>
+                    <td><input type="checkbox" class="paint-body-toggle" {% if item.paint_body %}checked{% endif %}></td>
+                    <td contenteditable="true" class="parts-cell">{{ item.parts }}</td>
+                    <td contenteditable="true" class="labor-cell">{{ item.labor }}</td>
+                    <td class="total-cell">{{ item.parts + item.labor }}</td>
                 </tr>
                 {% endfor %}
                 {% endif %}

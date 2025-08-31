@@ -2,9 +2,70 @@ fieldset{
     margin-bottom: .5rem;
 }
 
-td, th {
+td {
     border-inline: 1px solid var(--pico-table-border-color);
 }
+
+th, td {
+    background-color: transparent;
+}
+
+th {
+    height: 140px;
+    white-space: nowrap;
+    padding: 0 !important;
+    position: relative;
+}
+
+th::before,
+th::after {
+    content: '';
+    position: absolute;
+    width: 1px;
+    height: 50%;
+    bottom: 0;
+    background-color: var(--pico-table-border-color);
+}
+
+th::before {
+    left: 0;
+}
+
+th::after {
+    right: 0;
+}
+
+th > div {
+    transform: translate(0px, 51px) rotate(-65deg);
+    text-align: left;
+    width: 30px;
+    position: relative;
+}
+
+/* Customize the widths for these classes */
+.check-column {
+    width: 10px;
+}
+
+.text-column {
+    /* For text input columns */
+    width: 150px;
+}
+
+.number-column {
+    /* For numeric columns */
+    width: 80px;
+}
+
+.picture-column {
+    /* For the picture column */
+    width: 100px;
+}
+
+td {
+    padding: 8px !important;
+}
+
 
 .theme-toggle-container {
     position: absolute;

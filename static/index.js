@@ -1,8 +1,8 @@
 document.addEventListener('input', (event) => {
     const element = event.target;
     if (element.tagName === 'TD' && element.isContentEditable) {
-        const columnIndex = element.cellIndex;
-        if (columnIndex >= 3 && columnIndex <= 10) {
+        // Only validate numbers for parts and labor cells
+        if (element.classList.contains('parts-cell') || element.classList.contains('labor-cell')) {
             validateNumber(element);
         }
         addNewRowIfNeeded(element);
@@ -28,21 +28,50 @@ document.addEventListener('DOMContentLoaded', () => {
             invoiceNumberElement.style.display = 'block';
         }
     }
+
+    // Picture upload button logic
+    document.querySelectorAll('.picture-upload-btn').forEach((btn, idx) => {
+        btn.addEventListener('click', function() {
+            const row = btn.closest('tr');
+            const input = row.querySelector('.picture-input');
+            input.click();
+        });
+    });
+
+    document.querySelectorAll('.picture-input').forEach((input, idx) => {
+        input.addEventListener('change', async function() {
+            const file = input.files[0];
+            if (!file) return;
+            const row = input.closest('tr');
+            const preview = row.querySelector('.picture-preview');
+            const urlInput = row.querySelector('.picture-url');
+            // Upload to backend
+            const formData = new FormData();
+            formData.append('file', file);
+            const resp = await fetch('/upload-picture', { method: 'POST', body: formData });
+            if (resp.ok) {
+                const data = await resp.json();
+                urlInput.value = data.url;
+                preview.src = data.url;
+                preview.style.display = 'inline-block';
+            } else {
+                alert('Failed to upload image');
+            }
+        });
+    });
 });
 
 function updateTotal() {
     const rows = document.querySelectorAll('tbody tr');
     rows.forEach(row => {
-        const cells = row.querySelectorAll('td');
-        const headLights = parseFloat(cells[3].innerText) || 0;
-        const dents = parseFloat(cells[4].innerText) || 0;
-        const chipsScratches = parseFloat(cells[5].innerText) || 0;
-        const remediation = parseFloat(cells[6].innerText) || 0;
-        const paintBody = parseFloat(cells[7].innerText) || 0;
-        const parts = parseFloat(cells[8].innerText) || 0;
-        const labor = parseFloat(cells[9].innerText) || 0;
-        const total = headLights + dents + chipsScratches + remediation + paintBody + parts + labor;
-        cells[10].innerText = total;
+        const partsCell = row.querySelector('.parts-cell');
+        const laborCell = row.querySelector('.labor-cell');
+        const totalCell = row.querySelector('.total-cell');
+        if (partsCell && laborCell && totalCell) {
+            const parts = parseFloat(partsCell.innerText) || 0;
+            const labor = parseFloat(laborCell.innerText) || 0;
+            totalCell.innerText = parts + labor;
+        }
     });
 }
 
@@ -59,18 +88,80 @@ function addNewRowIfNeeded(element) {
     const rows = tbody.querySelectorAll('tr');
     if (row === rows[rows.length - 1]) {
         const newRow = document.createElement('tr');
-        for (let i = 0; i < 11; i++) {
+        // 13 columns: APPROVED, COMMENTS, STOCK #, DESCRIPTION, PICTURE, HEAD LIGHTS, DENTS, CHIPS/SCRATCHES, PAINT TOUCH UP, PAINT & BODY, PARTS, LABOR, TOTAL
+        for (let i = 0; i < 13; i++) {
             const newCell = document.createElement('td');
             if (i === 0) {
                 const checkbox = document.createElement('input');
                 checkbox.type = 'checkbox';
                 checkbox.className = 'approved-toggle';
                 newCell.appendChild(checkbox);
+            } else if (i === 1) {
+                newCell.contentEditable = "true";
+                newCell.className = 'comments-cell';
+            } else if (i === 4) {
+                // Picture upload
+                const fileInput = document.createElement('input');
+                fileInput.type = 'file';
+                fileInput.accept = 'image/*,.heic';
+                fileInput.className = 'picture-input';
+                fileInput.style.display = 'none';
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'picture-upload-btn';
+                btn.textContent = 'Upload';
+                const img = document.createElement('img');
+                img.className = 'picture-preview';
+                img.style.display = 'none';
+                img.style.maxWidth = '60px';
+                img.style.maxHeight = '60px';
+                const urlInput = document.createElement('input');
+                urlInput.type = 'hidden';
+                urlInput.className = 'picture-url';
+                newCell.appendChild(fileInput);
+                newCell.appendChild(btn);
+                newCell.appendChild(img);
+                newCell.appendChild(urlInput);
+                // Add event listeners
+                btn.addEventListener('click', function() { fileInput.click(); });
+                fileInput.addEventListener('change', async function() {
+                    const file = fileInput.files[0];
+                    if (!file) return;
+                    const formData = new FormData();
+                    formData.append('file', file);
+                    const resp = await fetch('/upload-picture', { method: 'POST', body: formData });
+                    if (resp.ok) {
+                        const data = await resp.json();
+                        urlInput.value = data.url;
+                        img.src = data.url;
+                        img.style.display = 'inline-block';
+                    } else {
+                        alert('Failed to upload image');
+                    }
+                });
+            } else if (i >= 5 && i <= 9) {
+                // Checkbox columns
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                if (i === 5) checkbox.className = 'head-lights-toggle';
+                if (i === 6) checkbox.className = 'dents-toggle';
+                if (i === 7) checkbox.className = 'chips-scratches-toggle';
+                if (i === 8) checkbox.className = 'remediation-toggle';
+                if (i === 9) checkbox.className = 'paint-body-toggle';
+                newCell.appendChild(checkbox);
+            } else if (i === 10) {
+                newCell.contentEditable = "true";
+                newCell.className = 'parts-cell';
+            } else if (i === 11) {
+                newCell.contentEditable = "true";
+                newCell.className = 'labor-cell';
+            } else if (i === 12) {
+                newCell.className = 'total-cell';
+            } else if (i === 3) {
+                newCell.contentEditable = "true";
+                newCell.className = 'description-cell';
             } else {
                 newCell.contentEditable = "true";
-                if (i >= 3 && i <= 10) {
-                    newCell.setAttribute('oninput', 'validateNumber(this)');
-                }
             }
             newRow.appendChild(newCell);
         }
@@ -88,7 +179,7 @@ function toggleTheme(themeToggle) {
 }
 
 function submitInvoice() {
-    const rows = document.querySelectorAll('tbody tr');
+    let rows = document.querySelectorAll('tbody tr');
     const invoiceNumberElement = document.getElementById('invoice-number');
     const nameElement = document.getElementById('name');
     const dateElement = document.getElementById('date');
@@ -109,17 +200,30 @@ function submitInvoice() {
         'invoiceItems': []
     };
 
+    // Remove last row if empty
+    const lastRowCells = Array.from(rows[rows.length - 1].querySelectorAll('td'));
+    const lastRowData = lastRowCells.slice(1,).map(cell => cell.innerText.trim());
+    if (lastRowData.every(cell => cell === '' || cell === '0.0' || cell === '0')) {
+        rows = Array.from(rows).slice(0, -1);
+    }
+
     rows.forEach(row => {
         const cells = row.querySelectorAll('td');
         const rowData = {};
-        const columnNames = ["APPROVED", "STOCK #", "DESCRIPTION", "HEAD LIGHTS", "DENTS", "CHIPS/SCRATCHES", "REMEDIATION", "PAINT & BODY", "PARTS", "LABOR", "TOTAL"];
-        cells.forEach((cell, index) => {
-            if (index === 0) {
-                rowData[columnNames[index]] = cell.querySelector('.approved-toggle').checked;
-            } else {
-                rowData[columnNames[index]] = cell.innerText.trim();
-            }
-        });
+        // ["APPROVED", "COMMENTS", "STOCK #", "DESCRIPTION", "PICTURE", ...]
+        rowData["APPROVED"] = cells[0].querySelector('.approved-toggle')?.checked || false;
+        rowData["COMMENTS"] = cells[1].innerText.trim();
+        rowData["STOCK #"] = cells[2].innerText.trim();
+        rowData["DESCRIPTION"] = cells[3].innerText.trim();
+        rowData["PICTURE_URL"] = cells[4].querySelector('.picture-url')?.value || '';
+        rowData["HEAD LIGHTS"] = cells[5].querySelector('.head-lights-toggle')?.checked || false;
+        rowData["DENTS"] = cells[6].querySelector('.dents-toggle')?.checked || false;
+        rowData["CHIPS/SCRATCHES"] = cells[7].querySelector('.chips-scratches-toggle')?.checked || false;
+        rowData["REMEDIATION"] = cells[8].querySelector('.remediation-toggle')?.checked || false;
+        rowData["PAINT & BODY"] = cells[9].querySelector('.paint-body-toggle')?.checked || false;
+        rowData["PARTS"] = cells[10].innerText.trim();
+        rowData["LABOR"] = cells[11].innerText.trim();
+        rowData["TOTAL"] = (parseFloat(rowData["PARTS"]) || 0) + (parseFloat(rowData["LABOR"]) || 0);
         data['invoiceItems'].push(rowData);
     });
 
