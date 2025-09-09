@@ -1,7 +1,10 @@
 from random import randint
 from flask import Flask, render_template, request, jsonify, send_file
 import os
+from dotenv import load_dotenv
 from azure.storage.blob import BlobServiceClient
+
+load_dotenv()  # Load environment variables from .env file
 from werkzeug.utils import secure_filename
 from uuid import uuid4
 from flask_sqlalchemy import SQLAlchemy
