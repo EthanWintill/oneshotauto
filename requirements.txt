@@ -18,6 +18,7 @@ packaging==24.2
 pillow==11.3.0
 pillow_heif==1.1.0
 pycparser==2.22
+python-dotenv==1.1.1
 requests==2.32.5
 six==1.17.0
 SQLAlchemy==2.0.37
