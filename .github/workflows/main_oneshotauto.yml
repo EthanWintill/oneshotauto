@@ -18,4 +18,4 @@ jobs:
         ssh-private-key: ${{ secrets.DROPLET_SSH_KEY }}
 
     - name: Run deploy script on droplet
-      run: ssh -o StrictHostKeyChecking=no ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }} 'bash /home/sammy/GreekGeek/Backend/scripts/deploy.sh'
+      run: ssh -o StrictHostKeyChecking=no ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }} 'bash /var/www/oneshotauto/oneshotauto/deploy.sh'
