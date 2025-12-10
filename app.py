@@ -131,6 +131,8 @@ def submit_invoice():
     else:
         invoice_id = 1 if not Invoice.query.all() else Invoice.query.all()[-1].invoice_id + 1
 
+    delete_invoice_if_exists(invoice_id)
+
     invoice = Invoice(date=date, name=name, invoice_id=invoice_id)
     db.session.add(invoice)
     db.session.commit()
