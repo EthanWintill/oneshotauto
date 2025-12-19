@@ -10,6 +10,62 @@ document.addEventListener('input', (event) => {
     }
 });
 
+// Client-side image compression helper. Attempts to resize and re-encode to JPEG.
+async function compressImage(file, maxWidth = 1600, quality = 0.8) {
+    // If file is already very small, skip
+    try {
+        if (file.size < 100 * 1024) return file; // <100KB skip
+        // try createImageBitmap path (faster)
+        const bitmap = await createImageBitmap(file);
+        const ratio = Math.min(1, maxWidth / bitmap.width);
+        const width = Math.round(bitmap.width * ratio);
+        const height = Math.round(bitmap.height * ratio);
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(bitmap, 0, 0, width, height);
+        return await new Promise((resolve) => {
+            canvas.toBlob((blob) => {
+                if (!blob) return resolve(file);
+                // If compressed blob is bigger than original, keep original
+                if (blob.size >= file.size) return resolve(file);
+                const newName = file.name.replace(/\.[^.]+$/, '.jpg');
+                const newFile = new File([blob], newName, { type: blob.type || 'image/jpeg' });
+                resolve(newFile);
+            }, 'image/jpeg', quality);
+        });
+    } catch (e) {
+        // Fallback using Image element (older browsers or decoding failure)
+        return new Promise((resolve) => {
+            const img = new Image();
+            img.onload = () => {
+                try {
+                    const ratio = Math.min(1, maxWidth / img.width);
+                    const width = Math.round(img.width * ratio);
+                    const height = Math.round(img.height * ratio);
+                    const canvas = document.createElement('canvas');
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+                    canvas.toBlob((blob) => {
+                        if (!blob) return resolve(file);
+                        if (blob.size >= file.size) return resolve(file);
+                        const newName = file.name.replace(/\.[^.]+$/, '.jpg');
+                        const newFile = new File([blob], newName, { type: blob.type || 'image/jpeg' });
+                        resolve(newFile);
+                    }, 'image/jpeg', quality);
+                } catch (err) {
+                    resolve(file);
+                }
+            };
+            img.onerror = () => resolve(file);
+            img.src = URL.createObjectURL(file);
+        });
+    }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     const dateElement = document.getElementById('date');
     const today = new Date().toISOString().split('T')[0];
@@ -45,9 +101,16 @@ document.addEventListener('DOMContentLoaded', () => {
             const row = input.closest('tr');
             const preview = row.querySelector('.picture-preview');
             const urlInput = row.querySelector('.picture-url');
+            // Compress image client-side before upload
+            let uploadFile = file;
+            try {
+                uploadFile = await compressImage(file, 1600, 0.8);
+            } catch (e) {
+                uploadFile = file;
+            }
             // Upload to backend
             const formData = new FormData();
-            formData.append('file', file);
+            formData.append('file', uploadFile, uploadFile.name);
             const resp = await fetch('/upload-picture', { method: 'POST', body: formData });
             if (resp.ok) {
                 const data = await resp.json();
@@ -127,8 +190,15 @@ function addNewRowIfNeeded(element) {
                 fileInput.addEventListener('change', async function() {
                     const file = fileInput.files[0];
                     if (!file) return;
+                    // Compress before upload
+                    let uploadFile = file;
+                    try {
+                        uploadFile = await compressImage(file, 1600, 0.8);
+                    } catch (e) {
+                        uploadFile = file;
+                    }
                     const formData = new FormData();
-                    formData.append('file', file);
+                    formData.append('file', uploadFile, uploadFile.name);
                     const resp = await fetch('/upload-picture', { method: 'POST', body: formData });
                     if (resp.ok) {
                         const data = await resp.json();
