@@ -11,7 +11,7 @@ th, td {
 }
 
 th {
-    height: 140px;
+    height: 8.75rem; /* was 140px */
     white-space: nowrap;
     padding: 0 !important;
     position: relative;
@@ -21,7 +21,7 @@ th::before,
 th::after {
     content: '';
     position: absolute;
-    width: 1px;
+    width: 0.0625rem; /* 1px */
     height: 50%;
     bottom: 0;
     background-color: var(--pico-table-border-color);
@@ -36,30 +36,42 @@ th::after {
 }
 
 th > div {
-    transform: translate(0px, 51px) rotate(-65deg);
+    transform: translate(0, 3.1875rem) rotate(-65deg); /* was translate Y 51px */
     text-align: left;
-    width: 30px;
+    width: 1.875rem; /* was 30px */
     position: relative;
 }
 
 /* Customize the widths for these classes */
 .check-column {
-    width: 10px;
+    width: 0.625rem; /* 10px */
+}
+
+.comment-column {
+    min-width: 16.25rem; /* 260px */
 }
 
 .text-column {
     /* For text input columns */
-    width: 150px;
+    width: 9.375rem; /* 150px */
+}
+
+.stock-column {
+    width: 7.5rem; /* 120px */
+}
+
+.description-column {
+    min-width: 13.75rem; /* 220px */
 }
 
 .number-column {
     /* For numeric columns */
-    width: 80px;
+    width: 5rem; /* 80px */
 }
 
 .picture-column {
     /* For the picture column */
-    width: 100px;
+    width: 6.25rem; /* 100px */
 }
 
 td {

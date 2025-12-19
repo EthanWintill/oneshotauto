@@ -262,3 +262,26 @@ function copyLink() {
         copyButton.value = 'Copy';
     }, 2000);
 }
+
+function printInvoice() {
+    const header = document.querySelector('header.container');
+    const table = document.querySelector('main.container table');
+    if (!header && !table) return;
+    let content = '';
+    if (header) content += header.outerHTML;
+    if (table) content += table.outerHTML;
+
+    const printFrame = document.createElement('iframe');
+    printFrame.style.display = 'none';
+    printFrame.srcdoc = '<html><head><title>Print</title>' +
+        '<link rel="stylesheet" href="/static/css/pico.slate.css">' +
+        '<link rel="stylesheet" href="/static/index.css">' +
+        '</head><body class="printScreen">' + content + '</body></html>';
+    document.body.appendChild(printFrame);
+
+    printFrame.onload = function() {
+        printFrame.contentWindow.focus();
+        printFrame.contentWindow.print();
+        setTimeout(() => { try { printFrame.remove(); } catch (e) {} }, 500);
+    };
+}

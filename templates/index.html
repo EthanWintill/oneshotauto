@@ -40,14 +40,14 @@
             <thead>
                 <tr>
                     <th class="check-column"><div>APPROVED</div></th>
-                    <th class="text-column"><div>COMMENTS</div></th>
-                    <th class="text-column"><div>STOCK #</div></th>
-                    <th class="text-column"><div>DESCRIPTION</div></th>
+                    <th class="comment-column"><div>COMMENTS</div></th>
+                    <th class="stock-column"><div>STOCK #</div></th>
+                    <th class="description-column"><div>Year/Make/Model</div></th>
                     <th class="picture-column"><div>PICTURE</div></th>
                     <th class="check-column"><div>HEAD LIGHTS</div></th>
                     <th class="check-column"><div>DENTS</div></th>
-                    <th class="check-column"><div>CHIPS & SCRATCHES</div></th>
-                    <th class="check-column"><div>PAINT TOUCH UP</div></th>
+                    <th class="check-column"><div>SCRATCHES</div></th>
+                    <th class="check-column"><div>CHIPS</div></th>
                     <th class="check-column"><div>PAINT & BODY</div></th>
                     <th class="number-column"><div>PARTS</div></th>
                     <th class="number-column"><div>LABOR</div></th>
@@ -70,8 +70,8 @@
                     </td>
                     <td><input type="checkbox" class="head-lights-toggle"></td>
                     <td><input type="checkbox" class="dents-toggle"></td>
-                    <td><input type="checkbox" class="chips-scratches-toggle"></td>
-                    <td><input type="checkbox" class="remediation-toggle"></td>
+                    <td><input type="checkbox" class="scratches-toggle"></td>
+                    <td><input type="checkbox" class="chips-toggle"></td>
                     <td><input type="checkbox" class="paint-body-toggle"></td>
                     <td contenteditable="true" class="parts-cell"></td>
                     <td contenteditable="true" class="labor-cell"></td>
@@ -98,8 +98,8 @@
                     </td>
                     <td><input type="checkbox" class="head-lights-toggle" {% if item.head_lights %}checked{% endif %}></td>
                     <td><input type="checkbox" class="dents-toggle" {% if item.dents %}checked{% endif %}></td>
-                    <td><input type="checkbox" class="chips-scratches-toggle" {% if item.chips_scratches %}checked{% endif %}></td>
-                    <td><input type="checkbox" class="remediation-toggle" {% if item.remediation %}checked{% endif %}></td>
+                    <td><input type="checkbox" class="scratches-toggle" {% if item.scratches %}checked{% endif %}></td>
+                    <td><input type="checkbox" class="chips-toggle" {% if item.chips %}checked{% endif %}></td>
                     <td><input type="checkbox" class="paint-body-toggle" {% if item.paint_body %}checked{% endif %}></td>
                     <td contenteditable="true" class="parts-cell">{{ item.parts }}</td>
                     <td contenteditable="true" class="labor-cell">{{ item.labor }}</td>
@@ -111,6 +111,7 @@
         </table>
         <div style="margin-top: 20px; text-align: right;">
             <button type="button" class="submit" onclick="submitInvoice()">Save & Create Share Link</button>
+            <button type="button" class="contrast" onclick="printInvoice()" style="margin-left:8px;">Print</button>
         </div>
         <fieldset id="link-container" role="group" style="display: none;">
             <input type="text" id="invoice-link" disabled>
