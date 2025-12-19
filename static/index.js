@@ -267,21 +267,28 @@ function printInvoice() {
     const header = document.querySelector('header.container');
     const table = document.querySelector('main.container table');
     if (!header && !table) return;
-    let content = '';
-    if (header) content += header.outerHTML;
-    if (table) content += table.outerHTML;
+    const content = (header ? header.outerHTML : '') + (table ? table.outerHTML : '');
 
-    const printFrame = document.createElement('iframe');
-    printFrame.style.display = 'none';
-    printFrame.srcdoc = '<html><head><title>Print</title>' +
+    const html = '<!doctype html><html><head><meta charset="utf-8"><title>Print</title>' +
         '<link rel="stylesheet" href="/static/css/pico.slate.css">' +
         '<link rel="stylesheet" href="/static/index.css">' +
         '</head><body class="printScreen">' + content + '</body></html>';
-    document.body.appendChild(printFrame);
 
-    printFrame.onload = function() {
-        printFrame.contentWindow.focus();
-        printFrame.contentWindow.print();
-        setTimeout(() => { try { printFrame.remove(); } catch (e) {} }, 500);
-    };
+    const w = window.open('', '_blank');
+    if (!w) {
+        alert('Unable to open print window (popup blocked). Please allow popups and try again.');
+        return;
+    }
+    w.document.open();
+    w.document.write(html);
+    w.document.close();
+    // Try to trigger print after short delay; user can also use browser UI
+    setTimeout(() => {
+        try {
+            w.focus();
+            w.print();
+        } catch (e) {
+            // ignore
+        }
+    }, 700);
 }
