@@ -215,8 +215,8 @@ function addNewRowIfNeeded(element) {
                 checkbox.type = 'checkbox';
                 if (i === 5) checkbox.className = 'head-lights-toggle';
                 if (i === 6) checkbox.className = 'dents-toggle';
-                if (i === 7) checkbox.className = 'chips-scratches-toggle';
-                if (i === 8) checkbox.className = 'remediation-toggle';
+                if (i === 7) checkbox.className = 'scratches-toggle';
+                if (i === 8) checkbox.className = 'chips-toggle';
                 if (i === 9) checkbox.className = 'paint-body-toggle';
                 newCell.appendChild(checkbox);
             } else if (i === 10) {
@@ -288,8 +288,10 @@ function submitInvoice() {
         rowData["PICTURE_URL"] = cells[4].querySelector('.picture-url')?.value || '';
         rowData["HEAD LIGHTS"] = cells[5].querySelector('.head-lights-toggle')?.checked || false;
         rowData["DENTS"] = cells[6].querySelector('.dents-toggle')?.checked || false;
-        rowData["CHIPS/SCRATCHES"] = cells[7].querySelector('.chips-scratches-toggle')?.checked || false;
-        rowData["REMEDIATION"] = cells[8].querySelector('.remediation-toggle')?.checked || false;
+        // separate CHIPS and SCRATCHES to match template
+        rowData["SCRATCHES"] = cells[7].querySelector('.scratches-toggle')?.checked || false;
+        rowData["CHIPS"] = cells[8].querySelector('.chips-toggle')?.checked || false;
+        rowData["REMEDIATION"] = false; // no remediation column in current UI
         rowData["PAINT & BODY"] = cells[9].querySelector('.paint-body-toggle')?.checked || false;
         rowData["PARTS"] = cells[10].innerText.trim();
         rowData["LABOR"] = cells[11].innerText.trim();
