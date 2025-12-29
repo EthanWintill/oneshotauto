@@ -3,7 +3,6 @@ from flask import Flask, render_template, request, jsonify, send_file
 import os
 from dotenv import load_dotenv
 from azure.storage.blob import BlobServiceClient
-from sqlalchemy import text
 
 load_dotenv()  # Load environment variables from .env file
 from werkzeug.utils import secure_filename
@@ -39,9 +38,6 @@ class InvoiceItem(db.Model):
     picture_url = db.Column(db.String(512), nullable=True)  # New field
     head_lights = db.Column(db.Boolean, nullable=False, default=False)
     dents = db.Column(db.Boolean, nullable=False, default=False)
-    chips = db.Column(db.Boolean, nullable=False, default=False)
-    scratches = db.Column(db.Boolean, nullable=False, default=False)
-    # Keep legacy column mapping so inserts satisfy older DB schema that still has chips_scratches
     chips_scratches = db.Column(db.Boolean, nullable=False, default=False)
     remediation = db.Column(db.Boolean, nullable=False, default=False)
     paint_body = db.Column(db.Boolean, nullable=False, default=False)
@@ -145,7 +141,7 @@ def submit_invoice():
         labor = float(item.get('LABOR') or 0)
         total = parts + labor
         invoice_item = InvoiceItem(
-            approved=bool(item.get('APPROVED')),
+            approved=item.get('APPROVED'),
             comments=item.get('COMMENTS'),
             invoice_id=invoice_id,
             stock_number=item.get('STOCK #'),
@@ -153,10 +149,7 @@ def submit_invoice():
             picture_url=item.get('PICTURE_URL'),  # New field
             head_lights=bool(item.get('HEAD LIGHTS')),
             dents=bool(item.get('DENTS')),
-            chips=bool(item.get('CHIPS')),
-            scratches=bool(item.get('SCRATCHES')),
-            # populate legacy column as OR of the new separate fields to maintain compatibility
-            chips_scratches=(bool(item.get('CHIPS')) or bool(item.get('SCRATCHES'))),
+            chips_scratches=bool(item.get('CHIPS/SCRATCHES')),
             remediation=bool(item.get('REMEDIATION')),
             paint_body=bool(item.get('PAINT & BODY')),
             parts=parts,
@@ -174,33 +167,7 @@ def delete_invoice(invoice_id):
     else:
         return render_template('404.html'), 404
 
-
-def _ensure_columns_and_migrate():
-    """Ensure `chips` and `scratches` columns exist in the SQLite table and backfill from
-    legacy `chips_scratches` column if present. This runs at startup before creating tables."""
-    engine = db.engine
-    with engine.connect() as conn:
-        # Get existing columns
-        res = conn.execute(text("PRAGMA table_info('invoice_item')"))
-        cols = [row[1] for row in res.fetchall()]
-        needs_update = False
-        if 'chips' not in cols:
-            conn.execute(text("ALTER TABLE invoice_item ADD COLUMN chips BOOLEAN NOT NULL DEFAULT 0"))
-            needs_update = True
-        if 'scratches' not in cols:
-            conn.execute(text("ALTER TABLE invoice_item ADD COLUMN scratches BOOLEAN NOT NULL DEFAULT 0"))
-            needs_update = True
-        # Backfill from legacy combined column if present
-        if 'chips_scratches' in cols and needs_update:
-            conn.execute(text("UPDATE invoice_item SET chips = COALESCE(chips_scratches, 0), scratches = COALESCE(chips_scratches, 0)"))
-
 if __name__ == '__main__':
     with app.app_context():
-        # Ensure new columns exist and migrate legacy data if needed
-        try:
-            _ensure_columns_and_migrate()
-        except Exception:
-            # If the table doesn't exist yet or PRAGMA fails, ignore and let create_all handle it
-            pass
         db.create_all()  # Create database tables for our data models
     app.run(host='0.0.0.0', port=5000, debug=True)
