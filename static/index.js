@@ -151,8 +151,8 @@ function addNewRowIfNeeded(element) {
     const rows = tbody.querySelectorAll('tr');
     if (row === rows[rows.length - 1]) {
         const newRow = document.createElement('tr');
-        // 13 columns: APPROVED, COMMENTS, STOCK #, DESCRIPTION, PICTURE, HEAD LIGHTS, DENTS, CHIPS/SCRATCHES, PAINT TOUCH UP, PAINT & BODY, PARTS, LABOR, TOTAL
-        for (let i = 0; i < 13; i++) {
+        // 12 columns: APPROVED, COMMENTS, STOCK #, DESCRIPTION, PICTURE, HEAD LIGHTS, DENTS, CHIPS/SCRATCHES, PAINT & BODY, PARTS, LABOR, TOTAL
+        for (let i = 0; i < 12; i++) {
             const newCell = document.createElement('td');
             if (i === 0) {
                 const checkbox = document.createElement('input');
@@ -209,23 +209,22 @@ function addNewRowIfNeeded(element) {
                         alert('Failed to upload image');
                     }
                 });
-            } else if (i >= 5 && i <= 9) {
+            } else if (i >= 5 && i <= 8) {
                 // Checkbox columns
                 const checkbox = document.createElement('input');
                 checkbox.type = 'checkbox';
                 if (i === 5) checkbox.className = 'head-lights-toggle';
                 if (i === 6) checkbox.className = 'dents-toggle';
                 if (i === 7) checkbox.className = 'chips-scratches-toggle';
-                if (i === 8) checkbox.className = 'remediation-toggle';
-                if (i === 9) checkbox.className = 'paint-body-toggle';
+                if (i === 8) checkbox.className = 'paint-body-toggle';
                 newCell.appendChild(checkbox);
-            } else if (i === 10) {
+            } else if (i === 9) {
                 newCell.contentEditable = "true";
                 newCell.className = 'parts-cell';
-            } else if (i === 11) {
+            } else if (i === 10) {
                 newCell.contentEditable = "true";
                 newCell.className = 'labor-cell';
-            } else if (i === 12) {
+            } else if (i === 11) {
                 newCell.className = 'total-cell';
             } else if (i === 3) {
                 newCell.contentEditable = "true";
@@ -289,10 +288,9 @@ function submitInvoice() {
         rowData["HEAD LIGHTS"] = cells[5].querySelector('.head-lights-toggle')?.checked || false;
         rowData["DENTS"] = cells[6].querySelector('.dents-toggle')?.checked || false;
         rowData["CHIPS/SCRATCHES"] = cells[7].querySelector('.chips-scratches-toggle')?.checked || false;
-        rowData["REMEDIATION"] = cells[8].querySelector('.remediation-toggle')?.checked || false;
-        rowData["PAINT & BODY"] = cells[9].querySelector('.paint-body-toggle')?.checked || false;
-        rowData["PARTS"] = cells[10].innerText.trim();
-        rowData["LABOR"] = cells[11].innerText.trim();
+        rowData["PAINT & BODY"] = cells[8].querySelector('.paint-body-toggle')?.checked || false;
+        rowData["PARTS"] = cells[9].innerText.trim();
+        rowData["LABOR"] = cells[10].innerText.trim();
         rowData["TOTAL"] = (parseFloat(rowData["PARTS"]) || 0) + (parseFloat(rowData["LABOR"]) || 0);
         data['invoiceItems'].push(rowData);
     });

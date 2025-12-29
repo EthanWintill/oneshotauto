@@ -46,8 +46,7 @@
                     <th class="picture-column"><div>PICTURE</div></th>
                     <th class="check-column"><div>HEAD LIGHTS</div></th>
                     <th class="check-column"><div>DENTS</div></th>
-                    <th class="check-column"><div>SCRATCHES</div></th>
-                    <th class="check-column"><div>CHIPS</div></th>
+                    <th class="check-column"><div>CHIPS/SCRATCHES</div></th>
                     <th class="check-column"><div>PAINT & BODY</div></th>
                     <th class="number-column"><div>PARTS</div></th>
                     <th class="number-column"><div>LABOR</div></th>
@@ -70,8 +69,7 @@
                     </td>
                     <td><input type="checkbox" class="head-lights-toggle"></td>
                     <td><input type="checkbox" class="dents-toggle"></td>
-                    <td><input type="checkbox" class="scratches-toggle"></td>
-                    <td><input type="checkbox" class="chips-toggle"></td>
+                    <td><input type="checkbox" class="chips-scratches-toggle"></td>
                     <td><input type="checkbox" class="paint-body-toggle"></td>
                     <td contenteditable="true" class="parts-cell"></td>
                     <td contenteditable="true" class="labor-cell"></td>
@@ -98,8 +96,7 @@
                     </td>
                     <td><input type="checkbox" class="head-lights-toggle" {% if item.head_lights %}checked{% endif %}></td>
                     <td><input type="checkbox" class="dents-toggle" {% if item.dents %}checked{% endif %}></td>
-                    <td><input type="checkbox" class="scratches-toggle" {% if item.scratches %}checked{% endif %}></td>
-                    <td><input type="checkbox" class="chips-toggle" {% if item.chips %}checked{% endif %}></td>
+                    <td><input type="checkbox" class="chips-scratches-toggle" {% if item.chips_scratches %}checked{% endif %}></td>
                     <td><input type="checkbox" class="paint-body-toggle" {% if item.paint_body %}checked{% endif %}></td>
                     <td contenteditable="true" class="parts-cell">{{ item.parts }}</td>
                     <td contenteditable="true" class="labor-cell">{{ item.labor }}</td>
