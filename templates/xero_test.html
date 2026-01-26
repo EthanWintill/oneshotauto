@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Xero API Test - Body Work Quote Tracker{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto">
+    <h2 class="text-2xl font-bold mb-6">Xero API Test Results</h2>
+
+    {% if error_message %}
+        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
+            <h3 class="font-bold mb-2">API Call Failed</h3>
+            <pre class="text-sm overflow-x-auto">{{ error_message }}</pre>
+        </div>
+    {% endif %}
+
+    {% if quotes_data %}
+        <div class="bg-white p-6 rounded-lg shadow">
+            <h3 class="text-lg font-semibold mb-3">Xero Quotes API Response</h3>
+            <pre class="p-4 bg-gray-900 text-green-400 rounded overflow-x-auto text-sm">{{ quotes_data | tojson(indent=2) }}</pre>
+        </div>
+
+        <script>
+            // Console log the JSON response as requested
+            console.log('Xero Quotes API Response:', {{ quotes_data | tojson | safe }});
+        </script>
+    {% endif %}
+
+    <div class="mt-6">
+        <a href="{{ url_for('index') }}" class="text-primary-blue hover:underline">← Back to Quotes</a>
+    </div>
+</div>
+{% endblock %}

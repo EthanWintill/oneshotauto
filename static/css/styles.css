@@ -1,0 +1,25 @@
+/* Import Tailwind CSS from CDN-compatible source */
+@import url('https://cdn.tailwindcss.com');
+
+/* Custom color utilities matching the original design */
+:root {
+  --color-primary-dark: #2c3e50;
+  --color-primary-dark-hover: #34495e;
+  --color-primary-blue: #3498db;
+  --color-primary-blue-hover: #2980b9;
+  --color-light-gray: #ecf0f1;
+  --color-light-gray-alt: #f8f9fa;
+  --color-border-gray: #ddd;
+  --color-border-gray-dark: #bdc3c7;
+  --color-success-bg: #d4edda;
+  --color-success-text: #155724;
+  --color-error-bg: #f8d7da;
+  --color-error-text: #721c24;
+  --color-danger: #e74c3c;
+  --color-danger-hover: #c0392b;
+}
+
+/* System font stack */
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+}

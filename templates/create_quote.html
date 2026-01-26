@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block title %}Create New Quote - Body Work Quote Tracker{% endblock %}
+
+{% block content %}
+<h2 class="text-2xl font-bold mb-6">Create New Quote</h2>
+
+<form method="POST" action="{{ url_for('create_quote') }}" class="bg-white p-8 rounded-lg shadow-md">
+    {{ form.hidden_tag() }}
+
+    <h3 class="text-lg font-semibold mb-6 pb-2 border-b-2 border-primary-dark">Base Information</h3>
+
+    <div class="grid grid-cols-2 gap-x-8 gap-y-6 mb-10">
+        <!-- Quote Number -->
+        <div>
+            <label for="{{ form.quote_number.id }}" class="block text-sm font-semibold text-gray-700 mb-2">{{ form.quote_number.label.text }}</label>
+            {{ form.quote_number(class="w-full px-4 py-2.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-blue focus:border-transparent") }}
+            {% if form.quote_number.errors %}
+                <span class="block text-danger text-sm mt-1">{{ form.quote_number.errors[0] }}</span>
+            {% endif %}
+        </div>
+
+        <!-- Date -->
+        <div>
+            <label for="{{ form.date.id }}" class="block text-sm font-semibold text-gray-700 mb-2">{{ form.date.label.text }}</label>
+            {{ form.date(class="w-full px-4 py-2.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-blue focus:border-transparent") }}
+            {% if form.date.errors %}
+                <span class="block text-danger text-sm mt-1">{{ form.date.errors[0] }}</span>
+            {% endif %}
+        </div>
+
+        <!-- VIN Number -->
+        <div>
+            <label for="{{ form.vin_number.id }}" class="block text-sm font-semibold text-gray-700 mb-2">{{ form.vin_number.label.text }}</label>
+            {{ form.vin_number(class="w-full px-4 py-2.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-blue focus:border-transparent") }}
+            {% if form.vin_number.errors %}
+                <span class="block text-danger text-sm mt-1">{{ form.vin_number.errors[0] }}</span>
+            {% endif %}
+        </div>
+
+        <!-- VIN Picture -->
+        <div>
+            <label for="{{ form.vin_picture_link.id }}" class="block text-sm font-semibold text-gray-700 mb-2">{{ form.vin_picture_link.label.text }}</label>
+            <input type="file" accept="image/*" class="picture-input w-full px-4 py-2.5 border border-gray-300 rounded-md text-sm file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-primary-blue file:text-white hover:file:bg-primary-blue-hover file:cursor-pointer">
+            {{ form.vin_picture_link(class="picture-url hidden") }}
+            <img class="picture-preview max-w-[150px] max-h-[150px] hidden mt-3 rounded-md border border-gray-200">
+        </div>
+
+        <!-- Year -->
+        <div>
+            <label for="{{ form.year.id }}" class="block text-sm font-semibold text-gray-700 mb-2">{{ form.year.label.text }}</label>
+            {{ form.year(class="w-full px-4 py-2.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-blue focus:border-transparent") }}
+        </div>
+
+        <!-- Make -->
+        <div>
+            <label for="{{ form.make.id }}" class="block text-sm font-semibold text-gray-700 mb-2">{{ form.make.label.text }}</label>
+            {{ form.make(class="w-full px-4 py-2.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-blue focus:border-transparent") }}
+        </div>
+
+        <!-- Model -->
+        <div class="col-span-2">
+            <label for="{{ form.model.id }}" class="block text-sm font-semibold text-gray-700 mb-2">{{ form.model.label.text }}</label>
+            {{ form.model(class="w-full px-4 py-2.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-blue focus:border-transparent") }}
+        </div>
+    </div>
+
+    <!-- Instructions Box -->
+    <div class="px-8 py-6 bg-gradient-to-br from-blue-50 to-gray-50 border-b-2 border-gray-300 rounded-lg shadow-sm mb-8">
+        <label for="{{ form.instructions.id }}" class="block mb-3 text-sm font-bold text-primary-dark uppercase tracking-wide">{{ form.instructions.label.text }}</label>
+        {{ form.instructions(class="w-full p-4 bg-white border-2 border-gray-200 rounded-lg text-sm resize-none leading-relaxed text-gray-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-blue focus:border-transparent", rows="6", placeholder="Enter specific instructions for this body work quote (optional)...") }}
+        {% if form.instructions.errors %}
+            <span class="block text-danger text-sm mt-1">{{ form.instructions.errors[0] }}</span>
+        {% endif %}
+    </div>
+
+    <h3 class="text-lg font-semibold mb-6 pb-2 border-b-2 border-primary-dark">Services</h3>
+
+    <div class="overflow-hidden rounded-xl border border-gray-200 shadow-sm">
+        <table class="w-full">
+            <thead>
+                <tr class="bg-gradient-to-r from-primary-dark to-primary-dark-hover text-white">
+                    <th class="py-4 px-6 text-left text-sm font-semibold uppercase tracking-wider w-36">Service</th>
+                    <th class="py-4 px-6 text-left text-sm font-semibold uppercase tracking-wider w-64">Photo</th>
+                    <th class="py-4 px-6 text-left text-sm font-semibold uppercase tracking-wider w-40">Parts Cost ($)</th>
+                    <th class="py-4 px-6 text-left text-sm font-semibold uppercase tracking-wider w-40">Labor Cost ($)</th>
+                </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+                {% for service_key, service_name in services %}
+                {% set photo_field = form|get_field(service_key + '_photo_link') %}
+                {% set parts_field = form|get_field(service_key + '_parts_cost') %}
+                {% set labor_field = form|get_field(service_key + '_labor_cost') %}
+                <tr class="hover:bg-blue-50/50 transition-colors duration-150">
+                    <td class="py-5 px-6 align-middle">
+                        <span class="font-semibold text-gray-900 text-base">{{ service_name }}</span>
+                    </td>
+                    <td class="py-5 px-6">
+                        <div class="space-y-3">
+                            <input type="file" accept="image/*" class="picture-input block w-full text-sm text-gray-600 file:mr-4 file:py-2.5 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-gradient-to-r file:from-primary-blue file:to-blue-600 file:text-white hover:file:from-primary-blue-hover hover:file:to-blue-700 file:cursor-pointer file:transition-all file:shadow-sm">
+                            {{ photo_field(class="picture-url hidden") }}
+                            <img class="picture-preview max-w-[140px] max-h-[140px] hidden rounded-lg border-2 border-gray-200 shadow-sm">
+                        </div>
+                    </td>
+                    <td class="py-5 px-6">
+                        {{ parts_field(class="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-blue focus:border-transparent transition-shadow", step="0.01", placeholder="0.00") }}
+                    </td>
+                    <td class="py-5 px-6">
+                        {{ labor_field(class="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-blue focus:border-transparent transition-shadow", step="0.01", placeholder="0.00") }}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="mt-10 flex items-center justify-end gap-4">
+        <a href="{{ url_for('index') }}" class="inline-flex items-center justify-center px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-lg no-underline transition-all duration-200 border border-gray-300 shadow-sm hover:shadow">
+            Cancel
+        </a>
+        {{ form.submit(class="inline-flex items-center justify-center px-8 py-3 bg-gradient-to-r from-primary-blue to-blue-600 hover:from-primary-blue-hover hover:to-blue-700 text-white font-semibold rounded-lg transition-all duration-200 shadow-md hover:shadow-lg cursor-pointer") }}
+    </div>
+</form>
+{% endblock %}
