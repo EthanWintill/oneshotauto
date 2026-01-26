@@ -10,6 +10,7 @@ from azure.storage.blob import BlobServiceClient
 from PIL import Image
 import pillow_heif
 from dotenv import load_dotenv
+load_dotenv()
 import requests
 import secrets
 import base64
@@ -17,7 +18,6 @@ from urllib.parse import urlencode
 from token_manager import save_tokens, get_access_token, is_token_valid, clear_tokens
 from xero_service import send_quote_to_xero
 
-load_dotenv()
 
 # Register HEIF opener with Pillow
 pillow_heif.register_heif_opener()
