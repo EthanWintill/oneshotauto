@@ -11,12 +11,12 @@
     <h3 class="text-lg font-semibold mb-6 pb-2 border-b-2 border-primary-dark">Base Information</h3>
 
     <div class="grid grid-cols-2 gap-x-8 gap-y-6 mb-10">
-        <!-- Quote Number -->
+        <!-- Invoice Number -->
         <div>
-            <label for="{{ form.quote_number.id }}" class="block text-sm font-semibold text-gray-700 mb-2">{{ form.quote_number.label.text }}</label>
-            {{ form.quote_number(class="w-full px-4 py-2.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-blue focus:border-transparent") }}
-            {% if form.quote_number.errors %}
-                <span class="block text-danger text-sm mt-1">{{ form.quote_number.errors[0] }}</span>
+            <label for="{{ form.invoice_number.id }}" class="block text-sm font-semibold text-gray-700 mb-2">{{ form.invoice_number.label.text }}</label>
+            {{ form.invoice_number(class="w-full px-4 py-2.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-blue focus:border-transparent") }}
+            {% if form.invoice_number.errors %}
+                <span class="block text-danger text-sm mt-1">{{ form.invoice_number.errors[0] }}</span>
             {% endif %}
         </div>
 
@@ -29,39 +29,46 @@
             {% endif %}
         </div>
 
-        <!-- VIN Number -->
+        <!-- Date Promised -->
         <div>
-            <label for="{{ form.vin_number.id }}" class="block text-sm font-semibold text-gray-700 mb-2">{{ form.vin_number.label.text }}</label>
-            {{ form.vin_number(class="w-full px-4 py-2.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-blue focus:border-transparent") }}
-            {% if form.vin_number.errors %}
-                <span class="block text-danger text-sm mt-1">{{ form.vin_number.errors[0] }}</span>
-            {% endif %}
+            <label for="{{ form.date_promised.id }}" class="block text-sm font-semibold text-gray-700 mb-2">{{ form.date_promised.label.text }}</label>
+            {{ form.date_promised(class="w-full px-4 py-2.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-blue focus:border-transparent") }}
         </div>
 
-        <!-- VIN Picture -->
+        <!-- Date Delivered -->
         <div>
-            <label for="{{ form.vin_picture_link.id }}" class="block text-sm font-semibold text-gray-700 mb-2">{{ form.vin_picture_link.label.text }}</label>
-            <input type="file" accept="image/*" class="picture-input w-full px-4 py-2.5 border border-gray-300 rounded-md text-sm file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-primary-blue file:text-white hover:file:bg-primary-blue-hover file:cursor-pointer">
-            {{ form.vin_picture_link(class="picture-url hidden") }}
-            <img class="picture-preview max-w-[150px] max-h-[150px] hidden mt-3 rounded-md border border-gray-200">
+            <label for="{{ form.date_delivered.id }}" class="block text-sm font-semibold text-gray-700 mb-2">{{ form.date_delivered.label.text }}</label>
+            {{ form.date_delivered(class="w-full px-4 py-2.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-blue focus:border-transparent") }}
         </div>
 
-        <!-- Year -->
+        <!-- Stock # -->
         <div>
-            <label for="{{ form.year.id }}" class="block text-sm font-semibold text-gray-700 mb-2">{{ form.year.label.text }}</label>
-            {{ form.year(class="w-full px-4 py-2.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-blue focus:border-transparent") }}
+            <label for="{{ form.stock_number.id }}" class="block text-sm font-semibold text-gray-700 mb-2">{{ form.stock_number.label.text }}</label>
+            {{ form.stock_number(class="w-full px-4 py-2.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-blue focus:border-transparent") }}
         </div>
 
-        <!-- Make -->
+        <!-- Tag # -->
         <div>
-            <label for="{{ form.make.id }}" class="block text-sm font-semibold text-gray-700 mb-2">{{ form.make.label.text }}</label>
-            {{ form.make(class="w-full px-4 py-2.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-blue focus:border-transparent") }}
+            <label for="{{ form.tag_number.id }}" class="block text-sm font-semibold text-gray-700 mb-2">{{ form.tag_number.label.text }}</label>
+            {{ form.tag_number(class="w-full px-4 py-2.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-blue focus:border-transparent") }}
         </div>
 
-        <!-- Model -->
+        <!-- To -->
+        <div>
+            <label for="{{ form.to_name.id }}" class="block text-sm font-semibold text-gray-700 mb-2">{{ form.to_name.label.text }}</label>
+            {{ form.to_name(class="w-full px-4 py-2.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-blue focus:border-transparent") }}
+        </div>
+
+        <!-- Color -->
+        <div>
+            <label for="{{ form.color.id }}" class="block text-sm font-semibold text-gray-700 mb-2">{{ form.color.label.text }}</label>
+            {{ form.color(class="w-full px-4 py-2.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-blue focus:border-transparent") }}
+        </div>
+
+        <!-- Vehicle -->
         <div class="col-span-2">
-            <label for="{{ form.model.id }}" class="block text-sm font-semibold text-gray-700 mb-2">{{ form.model.label.text }}</label>
-            {{ form.model(class="w-full px-4 py-2.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-blue focus:border-transparent") }}
+            <label for="{{ form.vehicle.id }}" class="block text-sm font-semibold text-gray-700 mb-2">{{ form.vehicle.label.text }}</label>
+            {{ form.vehicle(class="w-full px-4 py-2.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-blue focus:border-transparent") }}
         </div>
     </div>
 

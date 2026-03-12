@@ -13,17 +13,16 @@ def build_xero_quote_payload(quote):
 
     # Service name mapping
     service_names = {
-        'chips': 'Paint Chips Repair',
-        'scratches': 'Scratch Removal',
-        'dents': 'Dent Repair',
-        'headlights': 'Headlight Restoration',
-        'wheels': 'Wheel Repair',
-        'interior': 'Interior Detailing',
-        'detail': 'Full Detail',
-        'carspabasic': 'Car Spa Basic Package',
-        'carspaplus': 'Car Spa Plus Package',
-        'bed_liner': 'Bed Liner Installation',
-        'paint_body': 'Paint & Body Work'
+        'headlights_resurfacing': 'Headlights Re-surfacing',
+        'headlights_ceramic': 'Headlights Ceramic Coating',
+        'trim_ceramic': 'Trim Ceramic Coating',
+        'car_wizard_diy': 'Car Wizard DIY Kit',
+        'carspa_sealant': 'Car Spa (Sealant)',
+        'carspa_ceramic': 'Car Spa (Plus Ceramic)',
+        'mechanical': 'Mechanical',
+        'glass': 'Glass',
+        'tint': 'Tint',
+        'misc': 'Misc',
     }
 
     # Add each service as line items (if costs exist)

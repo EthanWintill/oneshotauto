@@ -39,25 +39,12 @@
 </head>
 <body class="bg-gray-100 text-gray-800 font-sans m-0 p-0">
     <nav class="bg-primary-dark text-white py-4 px-8 shadow-md flex items-center">
-        <h1 class="inline-block mr-8">Body Work Quote Tracker</h1>
+        <img src="{{ url_for('static', filename='car-icon.jpeg') }}" alt="Car Icon" class="h-12 w-auto mr-4">
+        <span class="text-xl font-bold mr-8">Car Tracker</span>
         <a href="{{ url_for('index') }}" class="text-white no-underline mr-6 px-4 py-2 rounded transition-colors hover:bg-primary-dark-hover">All Quotes</a>
         <a href="{{ url_for('create_quote') }}" class="text-white no-underline mr-6 px-4 py-2 rounded transition-colors hover:bg-primary-dark-hover">New Quote</a>
 
         <div class="flex-1"></div>
-
-        {% if is_xero_connected() %}
-            <a href="{{ url_for('xero_test') }}" class="text-white hover:text-gray-200 no-underline transition flex items-center gap-2 mr-4">
-                <span class="bg-green-500 w-2 h-2 rounded-full"></span>
-                Xero Connected
-            </a>
-            <a href="{{ url_for('xero_disconnect') }}" class="text-white hover:text-gray-200 no-underline transition text-sm">
-                Disconnect
-            </a>
-        {% else %}
-            <a href="{{ url_for('xero_authorize') }}" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md no-underline transition font-medium">
-                Connect to Xero
-            </a>
-        {% endif %}
     </nav>
 
     <div class="max-w-[1400px] mx-auto px-8 py-6">

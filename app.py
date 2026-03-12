@@ -56,39 +56,35 @@ def inject_xero_status():
 
 # Service names for iteration
 SERVICES = [
-    ('chips', 'Chips'),
-    ('scratches', 'Scratches'),
-    ('dents', 'Dents'),
-    ('headlights', 'Headlights'),
-    ('wheels', 'Wheels'),
-    ('interior', 'Interior'),
-    ('detail', 'Detail'),
-    ('carspabasic', 'CarsPA Basic'),
-    ('carspaplus', 'CarsPA Plus'),
-    ('bed_liner', 'Bed Liner'),
-    ('paint_body', 'Paint & Body')
+    ('headlights_resurfacing', 'Headlights Re-surfacing'),
+    ('headlights_ceramic', 'Headlights Ceramic Coating'),
+    ('trim_ceramic', 'Trim Ceramic Coating'),
+    ('car_wizard_diy', 'Car Wizard DIY Kit'),
+    ('carspa_sealant', 'Car Spa (Sealant)'),
+    ('carspa_ceramic', 'Car Spa (Plus Ceramic)'),
+    ('mechanical', 'Mechanical'),
+    ('glass', 'Glass'),
+    ('tint', 'Tint'),
+    ('misc', 'Misc'),
 ]
 
 @app.route('/')
 def index():
     """List all quotes with search/filter functionality"""
-    search_vin = request.args.get('vin', '')
-    search_quote_number = request.args.get('quote_number', '')
-    search_make = request.args.get('make', '')
-    search_model = request.args.get('model', '')
+    search_invoice_number = request.args.get('invoice_number', '')
+    search_vehicle = request.args.get('vehicle', '')
+    search_stock_number = request.args.get('stock_number', '')
     search_date_from = request.args.get('date_from', '')
     search_date_to = request.args.get('date_to', '')
-    
+
     query = Quote.query
-    
-    if search_vin:
-        query = query.filter(Quote.vin_number.contains(search_vin))
-    if search_quote_number:
-        query = query.filter(Quote.quote_number.contains(search_quote_number))
-    if search_make:
-        query = query.filter(Quote.make.contains(search_make))
-    if search_model:
-        query = query.filter(Quote.model.contains(search_model))
+
+    if search_invoice_number:
+        query = query.filter(Quote.invoice_number.contains(search_invoice_number))
+    if search_vehicle:
+        query = query.filter(Quote.vehicle.contains(search_vehicle))
+    if search_stock_number:
+        query = query.filter(Quote.stock_number.contains(search_stock_number))
     if search_date_from:
         try:
             date_from = datetime.strptime(search_date_from, '%Y-%m-%d').date()
@@ -101,14 +97,13 @@ def index():
             query = query.filter(Quote.date <= date_to)
         except ValueError:
             pass
-    
+
     quotes = query.order_by(Quote.date.desc()).all()
-    
-    return render_template('index.html', quotes=quotes, 
-                         search_vin=search_vin,
-                         search_quote_number=search_quote_number,
-                         search_make=search_make,
-                         search_model=search_model,
+
+    return render_template('index.html', quotes=quotes,
+                         search_invoice_number=search_invoice_number,
+                         search_vehicle=search_vehicle,
+                         search_stock_number=search_stock_number,
                          search_date_from=search_date_from,
                          search_date_to=search_date_to)
 
@@ -119,13 +114,15 @@ def create_quote():
     
     if form.validate_on_submit():
         quote = Quote(
-            quote_number=form.quote_number.data,
+            invoice_number=form.invoice_number.data,
             date=form.date.data,
-            vin_number=form.vin_number.data,
-            vin_picture_link=form.vin_picture_link.data or None,
-            year=form.year.data,
-            make=form.make.data or None,
-            model=form.model.data or None,
+            date_promised=form.date_promised.data or None,
+            date_delivered=form.date_delivered.data or None,
+            stock_number=form.stock_number.data or None,
+            to_name=form.to_name.data or None,
+            tag_number=form.tag_number.data or None,
+            color=form.color.data or None,
+            vehicle=form.vehicle.data or None,
             instructions=form.instructions.data or None,
         )
         
@@ -157,13 +154,15 @@ def quote_detail(id):
     form = QuoteForm(obj=quote)
     
     if form.validate_on_submit():
-        quote.quote_number = form.quote_number.data
+        quote.invoice_number = form.invoice_number.data
         quote.date = form.date.data
-        quote.vin_number = form.vin_number.data
-        quote.vin_picture_link = form.vin_picture_link.data or None
-        quote.year = form.year.data
-        quote.make = form.make.data or None
-        quote.model = form.model.data or None
+        quote.date_promised = form.date_promised.data or None
+        quote.date_delivered = form.date_delivered.data or None
+        quote.stock_number = form.stock_number.data or None
+        quote.to_name = form.to_name.data or None
+        quote.tag_number = form.tag_number.data or None
+        quote.color = form.color.data or None
+        quote.vehicle = form.vehicle.data or None
         quote.instructions = form.instructions.data or None
 
         # Update service fields
@@ -207,6 +206,12 @@ def send_quote_to_xero_route(id):
 
     # Redirect back to quote detail
     return redirect(url_for('quote_detail', id=id))
+
+@app.route('/quote/<int:id>/print')
+def quote_print(id):
+    """Print-optimized view of a quote."""
+    quote = Quote.query.get_or_404(id)
+    return render_template('quote_print.html', quote=quote, services=SERVICES)
 
 @app.route('/quote/<int:id>/delete', methods=['POST'])
 def delete_quote(id):
